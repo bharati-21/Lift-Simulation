@@ -77,20 +77,20 @@ const handleAddFloor = (e) => {
 	// Insert the new floor before the current top most floor
 	liftContainer.insertBefore(floorContainerNode, liftContainerFirstChild);
 
-    // Change the 2nd last floor buttons to have Up and Down buttons
-    if(numFloors > 1) {
-        document
-            .querySelector(`.lift-container .floor-container:nth-child(${numFloors})`)
-            .querySelector(
-                ".floor-buttons"
-            ).innerHTML = `<button class="btn" id="btn-up" data-button-floor=${
-            numFloors - 1
-        }>Up</button>
-        <button class="btn" id="btn-down" data-button-floor=${
-            numFloors - 1
-        }>Down</button>`;
-    }
+	// Change the 2nd last floor buttons to have Up and Down buttons
 
+	if (numFloors > 1) {
+		document
+			.querySelector(`.floor-container:nth-child(2)`)
+			.querySelector(
+				".floor-buttons"
+			).innerHTML = `<button class="btn" id="btn-up" data-button-floor=${
+			numFloors - 1
+		}>Up</button>
+        <button class="btn" id="btn-down" data-button-floor=${
+			numFloors - 1
+		}>Down</button>`;
+	}
 
 	// Get references to all the floors and add listener to each of them.
 	floorContainer = document.querySelectorAll(".floor-container");
@@ -101,20 +101,16 @@ const handleAddFloor = (e) => {
 
 function callLift(e) {
 	const target = e.target;
-    
-    // Event delegation. If the element clicked on the floor is a button, then move and open/ close the doors.
+
+	// Event delegation. If the element clicked on the floor is a button, then move and open/ close the doors.
 	if (target.classList.contains("btn")) {
 		let btnFloor = target.getAttribute("data-button-floor");
 		moveLiftToFloor(btnFloor);
 	}
 }
 
-function openLiftDoors(target) {
-	if (target.classList.contains("busy")) {
-		return;
-	}
+function initiateOpenCloseDoors(target) {
 	target.classList.add("open");
-	target.classList.add("busy");
 
 	setTimeout(() => {
 		target.classList.remove("open");
@@ -127,28 +123,47 @@ function openLiftDoors(target) {
 	}, 2500);
 }
 
+function openLiftDoors(target, time = 0) {
+	if (target.classList.contains("busy")) {
+		return;
+	}
+	target.classList.add("busy");
+
+	if (time === 0) {
+		initiateOpenCloseDoors(target);
+		return;
+	}
+
+	setTimeout(() => {
+		initiateOpenCloseDoors(target);
+	}, time * 1000);
+}
+
 function moveLiftToFloor(destFloor) {
-    // Get references to all the lifts.
+	// Get references to all the lifts.
 	const lifts = document.querySelectorAll(".lift");
 
 	for (let i = 0; i < lifts.length; i++) {
 		const currentLift = lifts[i];
 
-        // Find the first lift that's not busy.
+		// Find the first lift that's not busy.
 		if (!currentLift.classList.contains("busy")) {
 			const liftFloor = currentLift.getAttribute("data-current-floor");
 			const top = parseInt(currentLift.style.top);
 
-            // Move the lift if button clicked not on the same floor.
+			// Move the lift if button clicked not on the same floor.
+			const time = (Math.abs(destFloor - liftFloor) + 1) * 2;
 			if (liftFloor != destFloor) {
 				currentLift.style.top = `${
 					-172 * (destFloor - liftFloor) + (top ? top : 0)
 				}px`;
+
+				currentLift.style.transitionDuration = time + "s";
 				currentLift.setAttribute("data-current-floor", destFloor);
 			}
 
-            // Open and close doors and return.
-			openLiftDoors(currentLift);
+			// Open and close doors and return.
+			openLiftDoors(currentLift, destFloor === liftFloor ? 0 : time);
 			return;
 		}
 	}
@@ -170,7 +185,6 @@ function handleReset() {
     </div>
 </div>`;
 }
-
 
 // Add event listeners to all button
 btnAddFloor.addEventListener("click", handleAddFloor);
