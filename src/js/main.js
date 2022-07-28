@@ -7,17 +7,6 @@ let floorContainer = document.querySelectorAll(".floor-container");
 let numFloors = 0;
 let numLift = 1;
 
-const setHeight = () => {
-	const zeroFloorContainerHeight = document
-		.querySelector(".floor-container:last-child .floor-lift-container")
-		.getBoundingClientRect().height;
-
-	document.querySelectorAll(".floor-container").forEach((floor) => {
-		floor.querySelector(".floor-lift-container").style.minHeight =
-			zeroFloorContainerHeight + "px";
-	});
-};
-
 // Function to add new lift to ground floor
 const addLift = () => {
 	// Reference to the ground floor lift container
@@ -35,7 +24,7 @@ const addLift = () => {
 	zeroFloorContainer.appendChild(liftParent);
 };
 
-handleAddLift = (e) => {
+const handleAddLift = (e) => {
 	// If new lift overflows the parent, then return
 	if (
 		(numLift + 1) * 80 + 16 * numLift >=
@@ -99,7 +88,7 @@ const handleAddFloor = (e) => {
 	});
 };
 
-function callLift(e) {
+const callLift = (e) => {
 	const target = e.target;
 
 	// Event delegation. If the element clicked on the floor is a button, then move and open/ close the doors.
@@ -107,9 +96,9 @@ function callLift(e) {
 		let btnFloor = target.getAttribute("data-button-floor");
 		moveLiftToFloor(btnFloor);
 	}
-}
+};
 
-function initiateOpenCloseDoors(target) {
+const initiateOpenCloseDoors = (target) => {
 	target.classList.add("open");
 
 	setTimeout(() => {
@@ -121,9 +110,9 @@ function initiateOpenCloseDoors(target) {
 			target.classList.remove("busy");
 		}, 2500);
 	}, 2500);
-}
+};
 
-function openLiftDoors(target, time = 0) {
+const openLiftDoors = (target, time = 0) => {
 	if (target.classList.contains("busy")) {
 		return;
 	}
@@ -137,9 +126,9 @@ function openLiftDoors(target, time = 0) {
 	setTimeout(() => {
 		initiateOpenCloseDoors(target);
 	}, time * 1000);
-}
+};
 
-function moveLiftToFloor(destFloor) {
+const moveLiftToFloor = (destFloor) => {
 	// Get references to all the lifts.
 	const lifts = document.querySelectorAll(".lift");
 
@@ -152,7 +141,7 @@ function moveLiftToFloor(destFloor) {
 			const top = parseInt(currentLift.style.top);
 
 			// Move the lift if button clicked not on the same floor.
-			const time = (Math.abs(destFloor - liftFloor) + 1) * 2;
+			const time =  destFloor === liftFloor ? 0 : (Math.abs(destFloor - liftFloor) + 1) * 2;
 			if (liftFloor != destFloor) {
 				currentLift.style.top = `${
 					-172 * (destFloor - liftFloor) + (top ? top : 0)
@@ -163,14 +152,14 @@ function moveLiftToFloor(destFloor) {
 			}
 
 			// Open and close doors and return.
-			openLiftDoors(currentLift, destFloor === liftFloor ? 0 : time);
+			openLiftDoors(currentLift, time);
 			return;
 		}
 	}
-}
+};
 
 // Reset the lift container state to initial state with only ground floor and 1 lift.
-function handleReset() {
+const handleReset = () => {
 	document.querySelector(
 		".lift-container"
 	).innerHTML = `<div class="floor-container" data-floor="0">
@@ -184,7 +173,7 @@ function handleReset() {
         </div>
     </div>
 </div>`;
-}
+};
 
 // Add event listeners to all button
 btnAddFloor.addEventListener("click", handleAddFloor);
