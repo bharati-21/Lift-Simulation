@@ -8,6 +8,29 @@
 		<link rel="stylesheet" href="./src/css/main.css" />
 	</head>
 	<body>
+		<div class="container">
+			<h1 class="head">Lift Simulation</h1>
+			<div class="button-container">
+				<button class="btn" id="btn-add-floor">Add Floor</button>
+				<button class="btn" id="btn-add-lift">Add Lift</button>
+				<button class="btn" id="btn-reset">Reset</button>
+			</div>
+			<div class="lift-container">
+				<div class="floor-container" data-floor="0">
+					<div class="floor-buttons">
+						<button class="btn" id="btn-up" data-button-floor="0">
+							Up
+						</button>
+					</div>
+					<div class="floor-lift-container">
+						<div class="lift" data-current-floor="0">
+							<div class="lift-left"></div>
+							<div class="lift-right"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<script src="./src/js/main.js"></script>
 	</body>
 </html>
