@@ -141,7 +141,10 @@ const moveLiftToFloor = (destFloor) => {
 			const top = parseInt(currentLift.style.top);
 
 			// Move the lift if button clicked not on the same floor.
-			const time =  destFloor === liftFloor ? 0 : (Math.abs(destFloor - liftFloor) + 1) * 2;
+			const time =
+				destFloor === liftFloor
+					? 0
+					: (Math.abs(destFloor - liftFloor) + 1) * 2;
 			if (liftFloor != destFloor) {
 				currentLift.style.top = `${
 					-172 * (destFloor - liftFloor) + (top ? top : 0)
@@ -173,6 +176,8 @@ const handleReset = () => {
         </div>
     </div>
 </div>`;
+	numFloors = 0;
+	numLift = 0;
 };
 
 // Add event listeners to all button
